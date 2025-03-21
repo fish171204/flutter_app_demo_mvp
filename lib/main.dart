@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app_demo_mvp/counter/counter_presenter.dart';
 import 'package:flutter_app_demo_mvp/counter/counter_view.dart';
 
 void main() {
@@ -30,6 +31,21 @@ class CounterWidget extends StatefulWidget {
 }
 
 class _CounterWidgetState extends State<CounterWidget> implements CounterView {
+  int count = 0;
+
+  late CounterPresenter presenter;
+
+  _CounterWidgetState() {
+    presenter = CounterPresenter();
+    presenter.attachView(this);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    presenter.deAttachView();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,7 +63,9 @@ class _CounterWidgetState extends State<CounterWidget> implements CounterView {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    presenter.decrement();
+                  },
                   child: const Text(
                     "-",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 50),
@@ -57,7 +75,9 @@ class _CounterWidgetState extends State<CounterWidget> implements CounterView {
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
               ),
               TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    presenter.increment();
+                  },
                   child: const Text(
                     "+",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 50),
@@ -67,5 +87,20 @@ class _CounterWidgetState extends State<CounterWidget> implements CounterView {
         ),
       ),
     );
+  }
+
+  // Lay du lieu tu ben Logic gui ve
+  @override
+  void onDecrement(int value) {
+    setState(() {
+      count = value;
+    });
+  }
+
+  @override
+  void onIncrement(int value) {
+    setState(() {
+      count = value;
+    });
   }
 }
